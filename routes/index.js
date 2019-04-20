@@ -1,13 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const userController = require('../controller/indexController');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+router.get('/', (req, res, next) => res.render('index', userController.index()));
 
-router.get('/about', function (req, res, next) {
-    res.send('created from Jongho Lee')
-});
+router.get('/about', (req, res, next) => res.send('created from Jongho Lee'));
 
 module.exports = router;
