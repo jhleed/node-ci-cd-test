@@ -1,5 +1,11 @@
+const Q = require('q');
+
 function index() {
-    return 'Express';
+    let deferred = Q.defer();
+    setTimeout(() => {
+        deferred.resolve('Express');
+    }, 1000);
+    return deferred.promise;
 }
 
 module.exports = {

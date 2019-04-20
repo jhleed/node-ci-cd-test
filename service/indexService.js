@@ -1,3 +1,5 @@
+const Q = require('q');
+
 const userRepository = require("../persistence/indexRepository");
 
 
