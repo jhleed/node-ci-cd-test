@@ -2,6 +2,16 @@
 
 > 자주 사용되는 노드 프로젝트의 패턴들을 모아놓은 Repository
 
+### Config File
+보안 문제로 외부 시스템과 연결되는 프로퍼티 파일은 프로젝트 외부에 분리하고 Import 해서 사용하도록 함
+
+`config/config-path.json` 파일에 프로퍼티 파일의 경로를 설정
+```javascript
+{
+  "dbConfigPath": "/Users/jongholee/dev/workspace/project-config/node-pattern-sample/config/config.json"
+}
+```
+
 ### Express
 
 Ref : https://jistol.github.io/nodejs/2017/09/07/express-generator/
@@ -13,7 +23,28 @@ $ npm install
 $ npm start 
 ```
 
+import 할 때 아래와 같이 사용함
+```javascript
+
+//보안상 프로퍼티 정보는 외부에서 가져오도록 설정
+const configPath = require(__dirname + '/../config/config-path.json').dbConfigPath;
+const config = require(configPath)[env];
+const db = {};
+
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
+
+```
+
+
 ### PM2
+노드 프로세스 관리 도구 (nodemon도 사용해봤는데, PM2가 더 좋은 듯 하다.)
+
+현재 주로 사용하는 기능은 
+
+1. 핫 리로드 - 코드 수정시 바로 반영
+2. 서비스 죽으면 자동으로 재기동
+
+기본 세팅은 아래와 같다.
 ```
 module.exports = {
     apps: [
@@ -40,15 +71,66 @@ module.exports = {
 ```
 ### Mocha
 
-- 동기 / 비동기
-- Transaction Rollback
-- Mocking
+- 동기 / 비동기 각 경우에 대한 단위 테스트
+- Transaction Rollback (적용 예정)
+- Mocking (적용 예정)
+
+```javascript
+const assert = require('assert');
+const userRepository = require('../../persistence/userRepository');
+
+describe('userRepository', () => {
+    it('should return 2 elements when call userCategories', function (done) {
+        userRepository.getUsers().then((val) => {
+            assert.strictEqual(val[0].id, 1);
+            assert.strictEqual(val[0].name, '이종호');
+            done();
+        })
+    });
+});
+```
 
 ### Sequelize
 
 - ORM of Javascript
+
 ```
 npm i sequelize mysql2
 npm i -g sequelize-cli
 sequelize init
 ```
+
+`sequelize-cli` 가 생성해주는 index.js를 수정해야 한다.
+
+```javascript
+'use strict';
+
+const Sequelize = require('sequelize');
+const env = process.env.NODE_ENV || 'development';
+
+//보안상 프로퍼티 정보는 외부에서 가져오도록 설정
+const configPath = require(__dirname + '/../config/config-path.json').dbConfigPath;
+const config = require(configPath)[env];
+const db = {};
+
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+//모델 정보 읽어옴
+db.User = require('./user')(sequelize, Sequelize);
+
+//TODO 모델 관계 매핑
+
+module.exports = db;
+
+```
+
+
+
+### CI & CD (적용 예정)
+
+Docker 적용 예정
+
+- [참고 문서 : Travis CI, AWS CodeDeploy, Docker 로 배포 자동화 및 무중단 배포 환경 구축하기 - (1)](https://velog.io/@jeff0720/Travis-CI-AWS-CodeDeploy-Docker-%EB%A1%9C-%EB%B0%B0%ED%8F%AC-%EC%9E%90%EB%8F%99%ED%99%94-%EB%B0%8F-%EB%AC%B4%EC%A4%91%EB%8B%A8-%EB%B0%B0%ED%8F%AC-%ED%99%98%EA%B2%BD-%EA%B5%AC%EC%B6%95%ED%95%98%EA%B8%B0) 
