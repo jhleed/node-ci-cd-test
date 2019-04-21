@@ -91,7 +91,7 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 2. 서비스 죽으면 자동으로 재기동
 
 기본 세팅은 아래와 같다.
-```
+```javascript
 module.exports = {
     apps: [
         {
