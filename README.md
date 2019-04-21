@@ -14,7 +14,7 @@
 
 ### Express
 
-Ref : https://jistol.github.io/nodejs/2017/09/07/express-generator/
+[참고 문서 : express-generator - Node.js + Express 프로젝트 생성하기](https://jistol.github.io/nodejs/2017/09/07/express-generator/)
 
 ```
 $ express --view=hbs
@@ -22,6 +22,52 @@ $ cd <project dir>
 $ npm install
 $ npm start 
 ```
+
+Express와 자주 사용하는 라이브러리들 (파서, 로거 등)을 함께 셋업해준다. 
+기본 포트는 3000, 프로필은 development
+ 
+```javascript
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+
+const app = express();
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'hbs');
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', indexRouter);
+app.use('/users', userRouter);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+module.exports = app;
+
+```
+
 
 import 할 때 아래와 같이 사용함
 ```javascript
