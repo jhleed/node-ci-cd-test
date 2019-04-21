@@ -1,17 +1,17 @@
 const assert = require('assert');
-const categoryRepository = require('../../persistence/categoryRepository');
+const userRepository = require('../../persistence/userRepository');
 
-describe('categoryRepository', () => {
-    it('should return 2 elements when call getCategories', function (done) {
-        categoryRepository.getCategories().then((val) => {
+describe('userRepository', () => {
+    it('should return 2 elements when call userCategories', function (done) {
+        userRepository.getUsers().then((val) => {
             assert.deepStrictEqual(val, [
                 {
                     id: 1,
-                    name: '전시'
+                    name: '이종호'
                 },
                 {
                     id: 2,
-                    name: '뮤지컬'
+                    name: '임퍼뚱'
                 }
             ]);
             done();

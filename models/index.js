@@ -11,4 +11,7 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
+//모델 정보를 읽어온다.
+db.User = require('./user')(sequelize, Sequelize);
+
 module.exports = db;
