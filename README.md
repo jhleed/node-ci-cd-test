@@ -12,6 +12,18 @@
 }
 ```
 
+import 할 때 아래와 같이 사용한다.
+```javascript
+
+//보안상 프로퍼티 정보는 외부에서 가져오도록 설정
+const configPath = require(__dirname + '/../config/config-path.json').dbConfigPath;
+const config = require(configPath)[env];
+const db = {};
+
+const sequelize = new Sequelize(config.database, config.username, config.password, config);
+
+```
+
 ### Express
 
 [참고 문서 : express-generator - Node.js + Express 프로젝트 생성하기](https://jistol.github.io/nodejs/2017/09/07/express-generator/)
@@ -65,19 +77,6 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
-
-```
-
-
-import 할 때 아래와 같이 사용함
-```javascript
-
-//보안상 프로퍼티 정보는 외부에서 가져오도록 설정
-const configPath = require(__dirname + '/../config/config-path.json').dbConfigPath;
-const config = require(configPath)[env];
-const db = {};
-
-const sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 ```
 
